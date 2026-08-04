@@ -24,6 +24,7 @@ có field "deprecation" cảnh báo) và trả kết quả trong "retrieved_node
 
 import os
 import re
+import tempfile
 from pathlib import Path
 from typing import List
 from dotenv import load_dotenv
@@ -84,6 +85,34 @@ def _load_documents() -> List[dict]:
     ]
 
 
+def _markdown_to_pdf(markdown_path: Path, output_path: Path) -> None:
+    """Convert markdown text to a simple PDF for PageIndex upload."""
+    try:
+        from fpdf import FPDF
+    except ImportError as exc:
+        raise ImportError("fpdf chưa cài đặt. Hãy cài `pip install fpdf2`") from exc
+
+    pdf = FPDF()
+    pdf.set_auto_page_break(auto=True, margin=15)
+    pdf.add_page()
+    pdf.set_font("Arial", size=12)
+
+    text = markdown_path.read_text(encoding="utf-8")
+    for line in text.splitlines():
+        if not line.strip():
+            pdf.ln(4)
+            continue
+        if line.startswith("#"):
+            # Use bold style for headings
+            pdf.set_font("Arial", style="B", size=12)
+            pdf.multi_cell(0, 6, line.strip())
+            pdf.set_font("Arial", style="", size=12)
+        else:
+            pdf.multi_cell(0, 6, line)
+
+    pdf.output(str(output_path))
+
+
 def upload_documents():
     """
     Upload toàn bộ markdown documents lên PageIndex.
@@ -98,14 +127,27 @@ def upload_documents():
 
     client = PageIndexClient(api_key=PAGEINDEX_API_KEY)
     uploaded = []
-    for md_file in sorted(STANDARDIZED_DIR.rglob("*.md")):
-        if not md_file.exists():
-            continue
-        # PageIndex hiện tại chỉ nhận PDF; nếu cần, convert markdown sang PDF trước khi upload.
-        response = client.submit_document(str(md_file))
-        doc_id = response.get("doc_id") or response.get("id")
-        uploaded.append((md_file.name, doc_id))
-        print(f"  ✓ Uploaded: {md_file.name} -> {doc_id}")
+    md_files = sorted(STANDARDIZED_DIR.rglob("*.md"))
+
+    if not md_files:
+        raise FileNotFoundError(
+            f"Không tìm thấy file markdown để upload trong {STANDARDIZED_DIR}"
+        )
+
+    with tempfile.TemporaryDirectory() as tmp_dir:
+        temp_dir = Path(tmp_dir)
+        for md_file in md_files:
+            if not md_file.exists():
+                continue
+            upload_path = md_file
+            if md_file.suffix.lower() == ".md":
+                upload_path = temp_dir / f"{md_file.stem}.pdf"
+                _markdown_to_pdf(md_file, upload_path)
+            response = client.submit_document(str(upload_path))
+            doc_id = response.get("doc_id") or response.get("id")
+            uploaded.append((md_file.name, doc_id))
+            print(f"  ✓ Uploaded: {md_file.name} -> {doc_id}")
+
     return uploaded
 
 
@@ -122,12 +164,16 @@ def _pageindex_query(query: str, top_k: int = 5) -> list[dict]:
         return []
 
     client = PageIndexClient(api_key=PAGEINDEX_API_KEY)
-    resp = client.submit_query(doc_id=PAGEINDEX_DOC_ID, query=query)
-    retrieval_id = resp.get("retrieval_id") or resp.get("id")
-    if not retrieval_id:
+    try:
+        resp = client.submit_query(doc_id=PAGEINDEX_DOC_ID, query=query)
+        retrieval_id = resp.get("retrieval_id") or resp.get("id")
+        if not retrieval_id:
+            return []
+
+        retrieval = client.get_retrieval(retrieval_id)
+    except Exception:
         return []
 
-    retrieval = client.get_retrieval(retrieval_id)
     results = []
     for node in retrieval.get("retrieved_nodes", [])[:top_k]:
         for group in node.get("relevant_contents", []):
