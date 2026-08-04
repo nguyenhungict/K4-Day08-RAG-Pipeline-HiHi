@@ -38,41 +38,62 @@ st.set_page_config(
 # Sidebar
 # =============================================================================
 
-def render_sidebar() -> int:
-    st.title("E-commerce Support RAG")
-    st.caption(
-        "Giao diện hỗ trợ truy vấn chính sách thương mại điện tử "
-        "cho các lĩnh vực như đổi trả, thanh toán, bảo mật và quy định người bán."
-    )
-
-    st.divider()
-    st.subheader("Câu hỏi gợi ý")
-    suggestions = [
-        "Thời hạn yêu cầu trả hàng/hoàn tiền là bao lâu?",
-        "Shopee hỗ trợ những phương thức thanh toán nào?",
-        "Làm sao để đổi phương thức thanh toán đơn hàng?",
-        "Quy định về đăng bán sản phẩm cho người bán?",
-        "Cách mua hàng trên Shopee của quốc gia khác?",
+def reset_chat_history() -> None:
+    st.session_state.messages = [
+        {
+            "role": "assistant",
+            "content": (
+                "Xin chào! Tôi là trợ lý hỗ trợ chính sách thương mại điện tử. "
+                "Hãy nhập câu hỏi của bạn về đổi trả, thanh toán, bảo mật hoặc quy định người bán."
+            ),
+            "sources": [],
+        }
     ]
-    for row in range(0, len(suggestions), 2):
-        cols = st.columns(2)
-        for idx, suggestion in enumerate(suggestions[row:row + 2]):
-            if cols[idx].button(suggestion, use_container_width=True, key=f"suggestion_{row + idx}"):
-                st.session_state.pending_query = suggestion
+    st.session_state.pending_query = None
 
-    st.divider()
-    st.subheader("Thiết lập")
-    top_k = st.slider("Số chunk retrieval", 3, 10, 5)
-    st.caption("Điều chỉnh số lượng chunks tham gia retrieval để cân bằng độ rộng bằng chứng và hiệu suất.")
 
-    st.divider()
-    st.subheader("Kiến trúc hệ thống")
-    st.info(
-        "Hybrid Retrieval (Semantic + BM25) → RRF Rerank → PageIndex Fallback → LLM Generation với trích dẫn."
-    )
+def render_sidebar() -> int:
+    with st.sidebar:
+        st.title("E-commerce Policy Support")
+        st.caption(
+            "Tìm kiếm câu trả lời chính sách thương mại điện tử dựa trên văn bản tham khảo thực tế."
+        )
 
-    st.divider()
-    st.caption("Giao diện này đang ở chế độ khung UI CP2, chưa yêu cầu kết nối hoàn chỉnh với backend.")
+        st.divider()
+        st.subheader("Câu hỏi gợi ý")
+        suggestions = [
+            "Thời hạn yêu cầu trả hàng/hoàn tiền là bao lâu?",
+            "Làm sao để hủy tài khoản ShoppePay?",
+            "Cách trả hàng khi đơn phát sai kích thước?",
+            "Quy định đăng bán sản phẩm cho người bán?",
+            "Chính sách bảo mật thông tin khách hàng",
+        ]
+        for row in range(0, len(suggestions), 2):
+            cols = st.columns(2)
+            for idx, suggestion in enumerate(suggestions[row:row + 2]):
+                if cols[idx].button(suggestion, use_container_width=True, key=f"suggestion_{row + idx}"):
+                    st.session_state.pending_query = suggestion
+
+        st.divider()
+        st.subheader("Thiết lập truy vấn")
+        top_k = st.slider("Số chunk retrieval", 3, 10, 5)
+        st.caption("Điều chỉnh số lượng tài liệu tham khảo được lấy về để cân bằng độ chính xác và độ chi tiết.")
+
+        st.divider()
+        if st.button("Xóa lịch sử chat", use_container_width=True):
+            reset_chat_history()
+
+        st.divider()
+        st.subheader("Kiến trúc hệ thống")
+        st.markdown(
+            "Hybrid Retrieval → RRF Rerank → PageIndex Fallback → LLM Generation với trích dẫn."
+        )
+        st.caption("Luồng này giúp đảm bảo câu trả lời vừa đúng ngữ cảnh vừa có nguồn tham khảo rõ ràng.")
+
+        st.divider()
+        st.caption(
+            "Giao diện này được thiết kế chuyên nghiệp cho CP5, không dùng icon trang trí, chỉ dùng cấu trúc rõ ràng và trực quan."
+        )
     return top_k
 
 
@@ -126,48 +147,61 @@ init_session_state()
 
 top_k = render_sidebar()
 
-st.title("E-commerce Support RAG Chatbot")
+st.header("E-commerce Support RAG Chatbot")
 st.markdown(
-    "Hệ thống hỏi đáp chính sách thương mại điện tử và hỗ trợ khách hàng. "
-    "Giao diện này là khung frontend CP2, thiết kế rõ ràng và dễ quan sát."
+    "Chatbot hỗ trợ chính sách thương mại điện tử với câu trả lời dẫn chứng từ tài liệu. "
+    "Giao diện được thiết kế rõ ràng, chuyên nghiệp và tối ưu cho quy trình hỏi đáp CP5."
 )
 
 chat_col, info_col = st.columns([3, 1], gap="large")
 
 with chat_col:
+    st.subheader("Lịch sử hội thoại")
     for msg in st.session_state.messages:
-        with st.chat_message(msg["role"]):
-            st.markdown(msg["content"])
-            if msg["role"] == "assistant" and msg.get("sources"):
-                render_sources(msg["sources"])
+        role_label = "Trợ lý" if msg["role"] == "assistant" else "Bạn"
+        st.markdown(f"**{role_label}:**")
+        st.markdown(msg["content"])
+        if msg["role"] == "assistant" and msg.get("sources"):
+            render_sources(msg["sources"])
+        st.markdown("---")
 
-    user_input = st.chat_input("Nhập câu hỏi của bạn về chính sách/hỗ trợ thương mại điện tử...", placeholder="Nhập câu hỏi hoặc chọn từ gợi ý")
-    query = user_input or st.session_state.pending_query
+    with st.form("query_form"):
+        user_input = st.text_area(
+            "Nhập câu hỏi của bạn về chính sách/hỗ trợ thương mại điện tử...",
+            placeholder="Nhập câu hỏi hoặc chọn một gợi ý",
+            height=120,
+        )
+        submit = st.form_submit_button("Gửi câu hỏi")
+
+    query = None
+    if submit and user_input:
+        query = user_input
+    elif st.session_state.pending_query:
+        query = st.session_state.pending_query
 
     if query:
         st.session_state.pending_query = None
         append_message("user", query)
 
-        with st.chat_message("assistant"):
-            with st.spinner("Đang tìm kiếm tài liệu và tổng hợp câu trả lời..."):
-                try:
-                    from src.task10_generation import generate_with_citation
+        with st.spinner("Đang tìm kiếm tài liệu và tổng hợp câu trả lời..."):
+            try:
+                from src.task10_generation import generate_with_citation
 
-                    response = generate_with_citation(query, top_k=top_k)
-                    answer = response.get("answer", "Xin lỗi, tôi chưa thể trả lời câu hỏi này.")
-                    sources = response.get("sources", [])
-                except NotImplementedError:
-                    answer = (
+                response = generate_with_citation(query, top_k=top_k)
+                answer = response.get("answer", "Xin lỗi, tôi chưa thể trả lời câu hỏi này.")
+                sources = response.get("sources", [])
+            except NotImplementedError:
+                answer = (
                         "Task 10 chưa được implement. Hãy hoàn thành `src/task10_generation.py` "
                         "để tích hợp pipeline vào UI."
                     )
-                    sources = []
-                except Exception as error:
-                    answer = f"Lỗi khi chạy RAG Pipeline: {error}"
-                    sources = []
+                sources = []
+            except Exception as error:
+                answer = f"Lỗi khi chạy RAG Pipeline: {error}"
+                sources = []
 
-                st.markdown(answer)
-                render_sources(sources)
+            st.markdown(answer)
+            render_sources(sources)
 
         append_message("assistant", answer, sources)
 
@@ -181,7 +215,7 @@ with info_col:
 
     st.divider()
     st.subheader("Trạng thái hiện tại")
-    st.info(
+    st.markdown(
         "Giao diện đã sẵn sàng cho R3: chat history, câu hỏi gợi ý, input và panel nguồn tham khảo."
     )
     st.markdown("- Lịch sử chat được lưu trong phiên làm việc.")

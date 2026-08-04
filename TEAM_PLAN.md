@@ -120,7 +120,7 @@ Mỗi checkpoint đã có sẵn vài phút review/demo ngẫu nhiên cuối ch�
 |---|---|
 | 👑 **R1** | Phân công tổng hợp đoạn code tối ưu nhất của nhóm vào `app.py`, theo dõi tiến độ báo cáo |
 | ⚙️ **R2** | Kết nối `generate_with_citation()` (Task 10 của R3) vào luồng xử lý câu hỏi của `app.py` |
-| 🎨 **R3** | Hoàn thiện Streamlit `app.py`: chat UI, thanh chỉnh `top_k`, khung hiển thị source documents, câu hỏi gợi ý |
+| 🎨 **R3** | Hoàn thiện Streamlit `app.py`: chat UI chuyên nghiệp, thanh chỉnh `top_k`, khung hiển thị source documents, câu hỏi gợi ý, không dùng icon trang trí |
 | 📊 **R4** | Xây `group_project/evaluation/golden_dataset.json` (15–20 câu) → `python -m group_project.evaluation.eval_pipeline` lấy 4 chỉ số RAGAS → viết `results.md` (kèm so sánh A/B, vd hybrid+rerank vs dense-only) |
 
 ✅ **Pass Criteria:** Chatbot UI phản hồi kèm nguồn; `results.md` có đủ bảng điểm A/B testing.
