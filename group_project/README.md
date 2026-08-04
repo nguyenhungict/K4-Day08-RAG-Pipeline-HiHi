@@ -79,10 +79,10 @@ Xem code mẫu (DeepEval/RAGAS/TruLens) chi tiết trong `README.md` gốc mục
 
 | Thành viên | MSSV | Nhiệm vụ | Trạng thái |
 |-----------|------|----------|------------|
-| | | | |
-| | | | |
-| | | | |
-| | | | |
+| Nguyễn Duy Hưng | 2A202601702 | Role 1 — Team Leader & RAG Architect: điều phối, tích hợp pipeline và Task 9 | Chưa bắt đầu |
+| Nguyễn Hoàng Thảo Tiên | 2A202601650 | Role 2 — Data & Retrieval Specialist: Task 1–5 (dữ liệu, chuẩn hoá, indexing, semantic search) | Chưa bắt đầu |
+| Đoàn Duy Chiến | 2A202601366 | Role 3 — Frontend & Chatbot Developer: `app.py`, giao diện chatbot và Task 10 | Chưa bắt đầu |
+| Trần Bảo Phúc | 2A202601148 | Role 4 — Evaluation & QA Engineer: golden dataset, đánh giá RAGAS và báo cáo kết quả | Chưa bắt đầu |
 
 ---
 
