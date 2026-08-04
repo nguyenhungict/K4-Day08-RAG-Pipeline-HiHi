@@ -13,5 +13,65 @@
     "question": "Người bán không được đăng bán những sản phẩm nào?",
     "expected_answer": "Hàng giả/nhái, sản phẩm bất hợp pháp, vi phạm sở hữu trí tuệ, và các mặt hàng nằm trong danh sách cấm của sàn.",
     "expected_context": "Trang Product Listing Regulations, mục Prohibited Content"
+  },
+  {
+    "question": "Điều kiện để sản phẩm được hưởng chính sách bảo hành trên Shopee là gì?",
+    "expected_answer": "Sản phẩm phải được mua trên Shopee, còn trong thời hạn bảo hành, và lỗi phải do nhà sản xuất chứ không phải do người dùng gây ra.",
+    "expected_context": "Warranty Policy for Products Purchased on Shopee"
+  },
+  {
+    "question": "Shopee xử lý yêu cầu hoàn tiền trong bao lâu sau khi chấp nhận?",
+    "expected_answer": "Thông thường từ 3–7 ngày làm việc tùy theo phương thức thanh toán ban đầu.",
+    "expected_context": "Returns and Refunds Policy, mục Refund Processing Time"
+  },
+  {
+    "question": "Người mua có phải trả phí vận chuyển khi trả hàng không?",
+    "expected_answer": "Nếu lỗi do người bán hoặc sản phẩm bị lỗi, người bán chịu phí vận chuyển. Nếu người mua đổi ý (không phải lỗi sản phẩm), người mua chịu phí vận chuyển.",
+    "expected_context": "Returns and Refunds Policy, mục Shipping Fees for Returns"
+  },
+  {
+    "question": "ShopeePay có thể dùng để thanh toán ở đâu ngoài Shopee?",
+    "expected_answer": "ShopeePay có thể dùng tại các đối tác thương mại offline và online liên kết với Shopee, bao gồm cửa hàng tiện lợi và nhà hàng đối tác.",
+    "expected_context": "Payment Methods Overview, mục ShopeePay"
+  },
+  {
+    "question": "Thanh toán COD (tiền mặt khi nhận hàng) có áp dụng cho tất cả đơn hàng không?",
+    "expected_answer": "Không, COD chỉ áp dụng cho một số khu vực địa lý và có thể bị giới hạn theo giá trị đơn hàng hoặc loại sản phẩm.",
+    "expected_context": "Payment Methods Overview, mục Cash on Delivery"
+  },
+  {
+    "question": "Quy trình yêu cầu bảo hành sản phẩm trên Shopee gồm những bước nào?",
+    "expected_answer": "Người mua liên hệ người bán qua chat, cung cấp bằng chứng lỗi (ảnh/video), người bán xác nhận và hướng dẫn gửi hàng hoặc đổi hàng tại chỗ.",
+    "expected_context": "Warranty Policy, mục Warranty Claim Process"
+  },
+  {
+    "question": "Thời hạn bảo hành tiêu chuẩn cho sản phẩm điện tử trên Shopee là bao lâu?",
+    "expected_answer": "Thông thường 12 tháng theo chính sách của nhà sản xuất, nhưng có thể thay đổi tùy sản phẩm và người bán.",
+    "expected_context": "Warranty Policy, mục Standard Warranty Period"
+  },
+  {
+    "question": "Người mua có thể hủy đơn hàng sau khi đã thanh toán không?",
+    "expected_answer": "Có, người mua có thể hủy đơn trước khi người bán xác nhận hoặc trước khi hàng được giao cho đơn vị vận chuyển. Sau đó phải yêu cầu hoàn tiền qua chính sách trả hàng.",
+    "expected_context": "Returns and Refunds Policy, mục Order Cancellation"
+  },
+  {
+    "question": "Shopee có hoàn tiền về tài khoản ngân hàng hay ShopeePay khi trả hàng?",
+    "expected_answer": "Tiền được hoàn về phương thức thanh toán ban đầu: nếu trả bằng ShopeePay thì hoàn về ShopeePay, nếu trả bằng thẻ thì hoàn về thẻ.",
+    "expected_context": "Returns and Refunds Policy, mục Refund Methods"
+  },
+  {
+    "question": "Sản phẩm nào được loại trừ khỏi chính sách bảo hành của Shopee?",
+    "expected_answer": "Sản phẩm bị hư hại do người dùng, tai nạn, sử dụng sai cách, vật phẩm tiêu hao (pin, bóng đèn), và hàng hóa kỹ thuật số.",
+    "expected_context": "Warranty Policy, mục Exclusions"
+  },
+  {
+    "question": "Khi thanh toán bằng thẻ tín dụng trên Shopee có được trả góp không?",
+    "expected_answer": "Có, Shopee hỗ trợ trả góp 0% lãi suất qua một số ngân hàng và thẻ tín dụng đối tác, tùy thuộc vào chương trình khuyến mãi hiện hành.",
+    "expected_context": "Payment Methods Overview, mục Installment Payment"
+  },
+  {
+    "question": "Mức bảo hành có khác nhau giữa người bán Shopee Mall và người bán thông thường không?",
+    "expected_answer": "Có, Shopee Mall thường có chính sách bảo hành nghiêm ngặt hơn với cam kết hàng chính hãng và bảo hành theo nhà sản xuất, trong khi người bán thông thường có thể có chính sách riêng.",
+    "expected_context": "Warranty Policy, mục Shopee Mall vs Regular Sellers"
   }
 ]

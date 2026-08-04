@@ -42,7 +42,7 @@ def _load_corpus() -> list[dict]:
                     }
                 )
         except Exception as e:
-            print(f"⚠ Không đọc được {md_file.name}: {e}")
+            print(f" Không đọc được {md_file.name}: {e}")
     return corpus
 
 
@@ -120,5 +120,5 @@ if __name__ == "__main__":
             )
     else:
         print(
-            "⚠ Không có kết quả — corpus rỗng hoặc chưa convert markdown (chạy task3 trước)."
+            " Không có kết quả — corpus rỗng hoặc chưa convert markdown (chạy task3 trước)."
         )
