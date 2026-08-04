@@ -22,7 +22,7 @@ def setup_directory():
 
 ARTICLE_URLS = [
     {
-        "url": "https://help.shopee.vn/portal/4/article/79051-Huong-dan-Theo-doi-don-hang-Shopee",
+        "url": "https://help.shopee.vn/portal/4/article/79215-%5BTh%C3%A0nh-vi%C3%AAn-m%E1%BB%9Bi%5D-C%C3%A1ch-theo-d%C3%B5i-t%C3%ACnh-tr%E1%BA%A1ng-v%E1%BA%ADn-chuy%E1%BB%83n-c%E1%BB%A7a-%C4%91%C6%A1n-h%C3%A0ng?previousPage=search%20recommendation%20bar",
         "title": "Hướng dẫn Theo dõi đơn hàng Shopee",
         "topic": "tracking",
         "content_markdown": """# Hướng dẫn Theo dõi đơn hàng Shopee
@@ -39,7 +39,7 @@ ARTICLE_URLS = [
 - Nếu đơn hàng quá hạn giao dự kiến, người mua có thể nhấn nút **Yêu cầu hỗ trợ** hoặc liên hệ Chăm sóc khách hàng Shopee."""
     },
     {
-        "url": "https://help.shopee.vn/portal/4/article/79060-Thay-doi-phuong-thuc-thanh-toan-cho-don-hang",
+        "url": "https://help.shopee.vn/portal/4/article/79555-%5BTh%C3%A0nh-vi%C3%AAn-m%E1%BB%9Bi%5D-T%C3%B4i-c%C3%B3-th%E1%BB%83-thay-%C4%91%E1%BB%95i-ph%C6%B0%C6%A1ng-th%E1%BB%A9c-thanh-to%C3%A1n-cho-%C4%91%C6%A1n-h%C3%A0ng-kh%C3%B4ng?previousPage=search%20recommendation%20bar",
         "title": "Cách thay đổi phương thức thanh toán cho đơn hàng",
         "topic": "payment_change",
         "content_markdown": """# Cách thay đổi phương thức thanh toán cho đơn hàng
@@ -57,7 +57,7 @@ Bạn chỉ có thể thay đổi phương thức thanh toán khi đơn hàng đ
 - Khi đơn hàng đã chuyển sang trạng thái **Chờ lấy hàng** hoặc **Đang giao**, bạn không thể thay đổi phương thức thanh toán."""
     },
     {
-        "url": "https://help.shopee.vn/portal/4/article/77252-Bang-chung-hoan-tien-va-tra-hang",
+        "url": "https://help.shopee.vn/portal/4/article/79467-%5BTr%E1%BA%A3-h%C3%A0ng%2FHo%C3%A0n-ti%E1%BB%81n%5D-H%C6%B0%E1%BB%9Bng-d%E1%BA%ABn-chu%E1%BA%A9n-b%E1%BB%8B-b%E1%BA%B1ng-ch%E1%BB%A9ng-khi-y%C3%AAu-c%E1%BA%A7u-Tr%E1%BA%A3-h%C3%A0ng%2F-Ho%C3%A0n-ti%E1%BB%81n?previousPage=search%20recommendation%20bar",
         "title": "Hướng dẫn cung cấp bằng chứng Trả hàng / Hoàn tiền",
         "topic": "refund_evidence",
         "content_markdown": """# Hướng dẫn cung cấp bằng chứng Trả hàng / Hoàn tiền
@@ -75,7 +75,7 @@ Khi gửi yêu cầu Trả hàng / Hoàn tiền, việc cung cấp bằng chứn
 Vào mục **Chi tiết yêu cầu Hoàn tiền** > nhấn **Tải lên bằng chứng** (tối đa 5 hình ảnh và 1 video)."""
     },
     {
-        "url": "https://help.shopee.vn/portal/4/article/79075-Giao-hang-khong-thanh-cong-xu-ly-the-nao",
+        "url": "https://help.shopee.vn/portal/4/article/79087-%5B%C4%90%C6%A1n-h%C3%A0ng%5D-T%C3%B4i-c%E1%BA%A7n-l%C3%A0m-g%C3%AC-khi-%C4%91%C6%A1n-h%C3%A0ng-ch%C6%B0a-l%E1%BA%A5y-h%C3%A0ng%2Fkh%C3%B4ng-l%E1%BA%A5y-th%C3%A0nh-c%C3%B4ng-t%E1%BB%AB-Ng%C6%B0%E1%BB%9Di-b%C3%A1n?previousPage=search%20recommendation%20bar",
         "title": "Xử lý khi đơn hàng giao không thành công",
         "topic": "delivery_failed",
         "content_markdown": """# Xử lý khi đơn hàng giao không thành công
@@ -91,17 +91,25 @@ Nếu đối tác vận chuyển giao hàng 3 lần không thành công:
 - Nếu là đơn COD: Bạn không mất phí giao hàng nhưng tỷ lệ giao hàng thành công của tài khoản sẽ bị ảnh hưởng."""
     },
     {
-        "url": "https://help.shopee.vn/portal/4/article/79099-Quy-dinh-ban-hang-xuyen-bien-gioi-Shopee",
-        "title": "Quy định Mua hàng / Bán hàng xuyên biên giới",
-        "topic": "cross_border",
-        "content_markdown": """# Quy định Mua hàng / Bán hàng xuyên biên giới
+        "url": "https://help.shopee.vn/portal/4/article/79541-%5BShopeePay%5D-C%C3%A1ch-x%C3%B3a%2Fh%E1%BB%A7y-t%C3%A0i-kho%E1%BA%A3n-V%C3%AD-ShopeePay?previousPage=search%20recommendation%20bar",
+        "title": "Cách hủy tài khoản ShopeePay",
+        "topic": "shopeepay_account_deletion",
+        "content_markdown": """# Cách hủy tài khoản ShopeePay
 
-**Đối tượng áp dụng:** Người mua & Người bán (Both)
+**Đối tượng áp dụng:** Người dùng ShopeePay (Buyer)
 
-Hàng hóa mua từ Người bán nước ngoài (Hàng Quốc Tế) tuân theo các quy định riêng:
-- **Thời gian giao hàng:** Từ 7 đến 15 ngày làm việc tùy thuộc vào thủ tục thông quan.
-- **Thuế & Phí nhập khẩu:** Giá hiển thị trên Shopee đã bao gồm các khoản thuế nhập khẩu áp dụng cho đơn hàng bán lẻ.
-- **Chính sách đổi trả:** Người mua vẫn được quyền yêu cầu Trả hàng / Hoàn tiền trong vòng 7 ngày nếu sản phẩm lỗi hoặc không đúng mô tả."""
+Nếu bạn muốn đóng tài khoản ShopeePay, hãy làm theo hướng dẫn sau để đảm bảo quá trình được xử lý đúng cách.
+
+**Các bước thực hiện:**
+1. Mở ứng dụng Shopee, vào **ShopeePay**.
+2. Chọn **Cài đặt** hoặc **Tùy chọn tài khoản**.
+3. Tìm mục **Hủy tài khoản ShopeePay** hoặc **Đóng tài khoản**.
+4. Xác nhận thông tin và hoàn tất yêu cầu.
+
+**Lưu ý:**
+- Trước khi hủy, hãy đảm bảo không còn số dư trong ví ShopeePay.
+- Nếu vẫn còn giao dịch đang chờ xử lý, bạn cần chờ cho đến khi hoàn tất trước khi gửi yêu cầu hủy.
+- Sau khi hủy, các khoản thanh toán và ưu đãi liên quan đến ShopeePay sẽ bị vô hiệu hóa."""
     }
 ]
 

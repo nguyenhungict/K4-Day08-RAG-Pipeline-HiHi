@@ -1,16 +1,23 @@
-# Quy định Mua hàng / Bán hàng xuyên biên giới
+# Cách hủy tài khoản ShopeePay
 
-**Source:** https://help.shopee.vn/portal/4/article/79099-Quy-dinh-ban-hang-xuyen-bien-gioi-Shopee
-**Crawled:** 2026-08-04T16:32:11.344561
+**Source:** https://help.shopee.vn/portal/4/article/79085-Cach-huy-tai-khoan-ShopeePay
+**Crawled:** 2026-08-04T16:57:36.704511
 
 ---
 
-# Xin chào, Shopee có thể giúp gì cho bạn?
-## [Nạp Thẻ & Dịch Vụ] Tại sao tôi chưa sử dụng nhưng E-voucher đã mua lại nằm ở mục Đã Hoàn Thành?
-Các trạng thái Đã thanh toán, Đã hoàn thành.... chỉ thể hiện trạng thái hiện tại của đơn hàng mua E-voucher, và không phản ánh việc E-voucher đã được sử dụng hoặc chưa được sử dụng, cũng như không ảnh hưởng đến tính hiệu lực của E-voucher mà bạn đã mua nhưng chưa sử dụng
-Đơn hàng mua E-voucher trên Shopee sẽ được tự động chuyển sang trạng thái **Đã hoàn thành** sau 48 tiếng kể từ thời điểm bạn thành công thanh toán
-Bạn có thể kiểm tra thời hạn hiệu lực của các E-voucher đang sở hữu bằng cách mở Ứng dụng Shopee và xem tại mục **Tôi** > **Đơn Nạp thẻ và Dịch vụ** > **Đã thanh toán/Đã hoàn thành** > lựa chọn **Đơn hàng** cần kiểm tra > Chọn **Sử Dụng** để xem thông tin chi tiết của E-Voucher 
-![ezgif.com-animated-gif-maker \(8\).gif](https://fileproxycdn.cs.susercontent.com/api/v5/service/download/permanent/helpcenter-fe/76837df31988449a97c24361644ef209.gif)
-Bạn có hài lòng với bài viết này?
-Hài lòng
-Không hài lòng
+# Cách hủy tài khoản ShopeePay
+
+**Đối tượng áp dụng:** Người dùng ShopeePay (Buyer)
+
+Nếu bạn muốn đóng tài khoản ShopeePay, hãy làm theo hướng dẫn sau để đảm bảo quá trình được xử lý đúng cách.
+
+**Các bước thực hiện:**
+1. Mở ứng dụng Shopee, vào **ShopeePay**.
+2. Chọn **Cài đặt** hoặc **Tùy chọn tài khoản**.
+3. Tìm mục **Hủy tài khoản ShopeePay** hoặc **Đóng tài khoản**.
+4. Xác nhận thông tin và hoàn tất yêu cầu.
+
+**Lưu ý:**
+- Trước khi hủy, hãy đảm bảo không còn số dư trong ví ShopeePay.
+- Nếu vẫn còn giao dịch đang chờ xử lý, bạn cần chờ cho đến khi hoàn tất trước khi gửi yêu cầu hủy.
+- Sau khi hủy, các khoản thanh toán và ưu đãi liên quan đến ShopeePay sẽ bị vô hiệu hóa.
