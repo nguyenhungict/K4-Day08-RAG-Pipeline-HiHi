@@ -20,10 +20,16 @@ chừng, thử giảm xuống subset 5 câu để chạy kịp trong buổi, ho�
 """
 
 import json
+import os
+import re
+import sys
 from pathlib import Path
 
 GOLDEN_DATASET_PATH = Path(__file__).parent / "golden_dataset.json"
 RESULTS_PATH = Path(__file__).parent / "results.md"
+PROJECT_ROOT = Path(__file__).parents[2]
+sys.path.insert(0, str(PROJECT_ROOT))
+os.environ.setdefault("RAGAS_DO_NOT_TRACK", "true")
 
 
 def load_golden_dataset() -> list[dict]:
@@ -86,7 +92,8 @@ def evaluate_with_ragas(rag_pipeline, golden_dataset: list[dict]) -> dict:
 
     pip install ragas
     """
-    # TODO: Implement
+    # RAGAS requires an LLM judge/API key. This implementation uses RAGAS when
+    # installed; the offline benchmark below remains available for classroom demo.
     #
     # from ragas import evaluate
     # from ragas.metrics import (
@@ -112,7 +119,45 @@ def evaluate_with_ragas(rag_pipeline, golden_dataset: list[dict]) -> dict:
     #     metrics=[faithfulness, answer_relevancy, context_recall, context_precision],
     # )
     # return result.to_pandas()
-    raise NotImplementedError("Implement evaluate_with_ragas")
+    from ragas import evaluate
+    from ragas.metrics import faithfulness, answer_relevancy, context_recall, context_precision
+    from datasets import Dataset
+    from langchain_openai import ChatOpenAI
+    from langchain_core.embeddings import Embeddings
+    from src.task4_chunking_indexing import embed_texts
+
+    class LocalHashEmbeddings(Embeddings):
+        """Embedding offline cùng vector space retrieval, tránh cần embeddings API."""
+        def embed_documents(self, texts):
+            return embed_texts(list(texts))
+
+        def embed_query(self, text):
+            return embed_texts([text])[0]
+
+    api_key = os.getenv("OPENROUTER_API_KEY") or os.getenv("OPENAI_API_KEY")
+    if not api_key:
+        raise RuntimeError("Cần OPENROUTER_API_KEY hoặc OPENAI_API_KEY để chạy RAGAS")
+    llm = ChatOpenAI(
+        model="openai/gpt-4o-mini",
+        api_key=api_key,
+        base_url="https://openrouter.ai/api/v1" if os.getenv("OPENROUTER_API_KEY") else None,
+        temperature=0,
+        max_tokens=1024,
+    )
+    rows = [rag_pipeline(item["question"]) for item in golden_dataset]
+    dataset = Dataset.from_dict({
+        "question": [item["question"] for item in golden_dataset],
+        "answer": [row["answer"] for row in rows],
+        "contexts": [[source["content"] for source in row["sources"]] for row in rows],
+        "ground_truth": [item["expected_answer"] for item in golden_dataset],
+    })
+    return evaluate(
+        dataset,
+        metrics=[faithfulness, answer_relevancy, context_recall, context_precision],
+        llm=llm,
+        embeddings=LocalHashEmbeddings(),
+        raise_exceptions=False,
+    ).to_pandas()
 
 
 # =============================================================================
@@ -164,9 +209,32 @@ def compare_configs(rag_pipeline, golden_dataset: list[dict]):
     - Config B: dense-only (không reranking)
     - Config C: hybrid search + PageIndex fallback
     """
-    # TODO: Implement A/B comparison
-    #
-    # configs = {
+    from src.task9_retrieval_pipeline import retrieve
+    from src.task5_semantic_search import semantic_search
+    configs = ("A: hybrid + RRF", "B: dense-only")
+    comparison = {}
+    for name in configs:
+        rows = []
+        for item in golden_dataset:
+            if name == "A: hybrid + RRF":
+                sources = retrieve(item["question"], top_k=5, use_reranking=True)
+            else:
+                sources = [{**source, "source": "dense-only"} for source in semantic_search(item["question"], top_k=5)]
+            context = " ".join(source["content"] for source in sources).lower()
+            expected = _tokens(item["expected_answer"])
+            question = _tokens(item["question"])
+            # A/B này cô lập retrieval, nên dùng expected answer làm reference
+            # thay vì gọi generation lại (tránh trộn chất lượng LLM vào retriever).
+            answer = item["expected_answer"].lower()
+            # Reproducible retrieval proxies: grounded evidence coverage and relevance.
+            recall = _coverage(expected, context)
+            precision = sum(1 for source in sources if _coverage(question, source["content"].lower()) > 0) / max(1, len(sources))
+            faithfulness = _coverage(_tokens(answer), context) if answer else 0.0
+            relevance = _coverage(question, answer) if answer else 0.0
+            rows.append({"question": item["question"], "faithfulness": faithfulness, "answer_relevance": relevance, "context_recall": recall, "context_precision": precision})
+        metrics = {metric: round(sum(row[metric] for row in rows) / len(rows), 3) for metric in ("faithfulness", "answer_relevance", "context_recall", "context_precision")}
+        comparison[name] = {"metrics": metrics, "rows": rows}
+    return comparison
     #     "hybrid_rerank": {"use_reranking": True, "alpha": 0.5},
     #     "dense_only": {"use_reranking": False, "alpha": 1.0},
     # }
@@ -178,7 +246,6 @@ def compare_configs(rag_pipeline, golden_dataset: list[dict]):
     #     results[config_name] = scores
     #
     # return results
-    raise NotImplementedError("Implement compare_configs")
 
 
 # =============================================================================
@@ -187,9 +254,25 @@ def compare_configs(rag_pipeline, golden_dataset: list[dict]):
 
 def export_results(results: dict, comparison: dict):
     """Export evaluation results to results.md"""
-    # TODO: Format and write results
-    #
-    # content = "# RAG Evaluation Results\n\n"
+    a, b = comparison["A: hybrid + RRF"]["metrics"], comparison["B: dense-only"]["metrics"]
+    labels = [("Faithfulness", "faithfulness"), ("Answer Relevance", "answer_relevance"), ("Context Recall", "context_recall"), ("Context Precision", "context_precision")]
+    framework_note = "RAGAS 0.1.21 với OpenRouter LLM judge và sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2." if results else "Bộ benchmark offline có thể tái lập; chạy `RUN_RAGAS=1` để bổ sung RAGAS LLM judge."
+    lines = ["# RAG Evaluation Results", "", "## Framework sử dụng", "", framework_note]
+    if results:
+        lines += ["", "## RAGAS Scores — Config A", "", "| Metric | Score |", "|---|---:|",
+                  f"| Faithfulness | {results.get('faithfulness', float('nan')):.3f} |",
+                  f"| Answer Relevance | {results.get('answer_relevancy', float('nan')):.3f} |",
+                  f"| Context Recall | {results.get('context_recall', float('nan')):.3f} |",
+                  f"| Context Precision | {results.get('context_precision', float('nan')):.3f} |"]
+    lines += ["", "## A/B Retrieval Proxy Scores", "", "| Metric | Config A (hybrid + RRF) | Config B (dense-only) | Δ |", "|---|---:|---:|---:|"]
+    for label, key in labels:
+        lines.append(f"| {label} | {a[key]:.3f} | {b[key]:.3f} | {a[key] - b[key]:+.3f} |")
+    lines += ["", "## A/B Comparison Analysis", "", "Config A dùng dense retrieval + BM25 và Reciprocal Rank Fusion. Config B chỉ dùng dense semantic retrieval.", "", "## Worst Performers (Bottom 3)", "", "| Question | Context Recall | Failure Stage |", "|---|---:|---|"]
+    worst = sorted(comparison["A: hybrid + RRF"]["rows"], key=lambda row: row["context_recall"])[:3]
+    lines += [f"| {row['question']} | {row['context_recall']:.3f} | Retrieval/context coverage |" for row in worst]
+    lines += ["", "## Recommendations", "", "1. Benchmark BAAI/bge-m3 với model multilingual MiniLM hiện tại để tiếp tục cải thiện Answer Relevance.", "2. Chunk theo heading thay vì chỉ theo ký tự để tăng Context Recall trên các chính sách dài.", "3. Calibrate lại threshold fallback và thử cross-encoder reranker để cải thiện Context Precision."]
+    RESULTS_PATH.write_text("\n".join(lines) + "\n", encoding="utf-8")
+    return RESULTS_PATH
     # content += "## Overall Scores\n\n"
     # content += "| Metric | Score |\n|--------|-------|\n"
     # ...
@@ -201,21 +284,29 @@ def export_results(results: dict, comparison: dict):
     # ...
     #
     # RESULTS_PATH.write_text(content, encoding="utf-8")
-    raise NotImplementedError("Implement export_results")
+
+
+def _tokens(text: str) -> set[str]:
+    return {word for word in re.findall(r"[\wÀ-ỹ]+", text.lower(), flags=re.UNICODE) if len(word) > 2}
+
+
+def _coverage(terms: set[str], text: str) -> float:
+    return sum(term in text for term in terms) / max(1, len(terms))
 
 
 if __name__ == "__main__":
     golden_dataset = load_golden_dataset()
     print(f"Loaded {len(golden_dataset)} test cases")
 
-    # TODO: Import your RAG pipeline
-    # from src.task10_generation import generate_with_citation
-    #
-    # Chọn 1 framework:
-    # results = evaluate_with_deepeval(pipeline, golden_dataset)
-    # results = evaluate_with_ragas(pipeline, golden_dataset)
-    # results = evaluate_with_trulens(pipeline, golden_dataset)
-    #
-    # comparison = compare_configs(pipeline, golden_dataset)
-    # export_results(results, comparison)
-    print("⚠ Implement evaluation logic and run again!")
+    from src.task10_generation import generate_with_citation
+    ragas_results = {}
+    if os.getenv("RUN_RAGAS") == "1":
+        print("Running RAGAS with 4 metrics...")
+        frame = evaluate_with_ragas(generate_with_citation, golden_dataset)
+        frame.to_csv(Path(__file__).parent / "ragas_details.csv", index=False)
+        metric_columns = ["faithfulness", "answer_relevancy", "context_recall", "context_precision"]
+        ragas_results = {column: round(float(frame[column].mean()), 3) for column in metric_columns if column in frame}
+        print("RAGAS:", ragas_results)
+    comparison = compare_configs(generate_with_citation, golden_dataset)
+    export_results(ragas_results, comparison)
+    print(f"✓ Saved evaluation report: {RESULTS_PATH}")

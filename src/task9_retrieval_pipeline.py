@@ -77,9 +77,32 @@ def retrieve(
             'source': str  # 'hybrid' hoặc 'pageindex'
         }
     """
-    # TODO: Implement full retrieval pipeline
-    #
-    # Step 1: Song song chạy semantic + lexical
+    if not query.strip() or top_k <= 0:
+        return []
+    dense_results = semantic_search(query, top_k=top_k * 2)
+    sparse_results = lexical_search(query, top_k=top_k * 2)
+    best_dense_score = dense_results[0]["score"] if dense_results else 0.0
+    # Dùng cosine gốc cho fallback; score RRF chỉ là điểm xếp hạng.
+    # Hash embedding offline có thể va chạm trên query rất ngắn. Khi BM25 không
+    # tìm thấy bất kỳ bằng chứng từ vựng nào, yêu cầu cosine mạnh hơn trước khi
+    # chấp nhận dense-only result.
+    effective_threshold = score_threshold if sparse_results else max(score_threshold, 0.45)
+    if best_dense_score < effective_threshold:
+        fallback = pageindex_search(query, top_k=top_k)
+        if fallback:
+            return fallback
+        # Query ngoài domain: không ép trả dense chunks điểm thấp vì sẽ làm LLM
+        # trả lời một chính sách không liên quan (ví dụ: "who am I").
+        return []
+    merged = rerank_rrf([dense_results, sparse_results], top_k=top_k * 2)
+    for item in merged:
+        item["source"] = "hybrid"
+        item["dense_score"] = next((d["score"] for d in dense_results if d["content"] == item["content"]), 0.0)
+    final_results = rerank(query, merged, top_k=top_k, method=RERANK_METHOD) if use_reranking else merged[:top_k]
+    # Hybrid can be empty when every BM25 score is zero; dense still remains useful.
+    if not final_results:
+        final_results = [{**item, "source": "hybrid"} for item in dense_results[:top_k]]
+    return final_results[:top_k]
     # dense_results = semantic_search(query, top_k=top_k * 2)
     # sparse_results = lexical_search(query, top_k=top_k * 2)
     #
@@ -103,7 +126,6 @@ def retrieve(
     #         return fallback
     #
     # return final_results[:top_k]
-    raise NotImplementedError("Implement retrieve")
 
 
 if __name__ == "__main__":

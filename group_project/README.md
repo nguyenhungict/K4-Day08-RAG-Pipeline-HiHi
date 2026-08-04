@@ -70,7 +70,13 @@ Xem code mẫu (DeepEval/RAGAS/TruLens) chi tiết trong `README.md` gốc mục
 ## Kiến Trúc Hệ Thống
 
 ```
-[Vẽ diagram kiến trúc ở đây]
+Người dùng → Streamlit Chat UI (memory)
+                 ↓
+Semantic Search + BM25 → RRF reranking → PageIndex fallback
+                 ↓
+       Context reordering → Generation có citation → Sources
+                 ↓
+  Golden dataset → A/B evaluation → results.md
 ```
 
 ---
@@ -79,10 +85,10 @@ Xem code mẫu (DeepEval/RAGAS/TruLens) chi tiết trong `README.md` gốc mục
 
 | Thành viên | MSSV | Nhiệm vụ | Trạng thái |
 |-----------|------|----------|------------|
-| Nguyễn Duy Hưng | 2A202601702 | Role 1 — Team Leader & RAG Architect: điều phối, tích hợp pipeline và Task 9 | Chưa bắt đầu |
-| Nguyễn Hoàng Thảo Tiên | 2A202601650 | Role 2 — Data & Retrieval Specialist: Task 1–5 (dữ liệu, chuẩn hoá, indexing, semantic search) | Chưa bắt đầu |
-| Đoàn Duy Chiến | 2A202601366 | Role 3 — Frontend & Chatbot Developer: `app.py`, giao diện chatbot và Task 10 | Chưa bắt đầu |
-| Trần Bảo Phúc | 2A202601148 | Role 4 — Evaluation & QA Engineer: golden dataset, đánh giá RAGAS và báo cáo kết quả | Chưa bắt đầu |
+| Nguyễn Duy Hưng | 2A202601702 | Role 1 — Team Leader & RAG Architect: điều phối, tích hợp pipeline và Task 9 | Hoàn thành |
+| Nguyễn Hoàng Thảo Tiên | 2A202601650 | Role 2 — Data & Retrieval Specialist: Task 1–5 (dữ liệu, chuẩn hoá, indexing, semantic search) | Hoàn thành |
+| Đoàn Duy Chiến | 2A202601366 | Role 3 — Frontend & Chatbot Developer: `app.py`, giao diện chatbot và Task 10 | Hoàn thành |
+| Trần Bảo Phúc | 2A202601148 | Role 4 — Evaluation & QA Engineer: golden dataset, đánh giá RAGAS và báo cáo kết quả | Hoàn thành |
 
 ---
 

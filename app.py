@@ -11,9 +11,11 @@ import sys
 from pathlib import Path
 
 import streamlit as st
-from dotenv import load_dotenv
-
-load_dotenv()
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+except ImportError:
+    pass
 
 # Thêm project root vào sys.path để import các task từ src/
 PROJECT_ROOT = Path(__file__).parent
@@ -46,7 +48,7 @@ with st.sidebar:
         "Shopee hỗ trợ những phương thức thanh toán nào?",
         "Làm sao để đổi phương thức thanh toán đơn hàng?",
         "Quy định về đăng bán sản phẩm cho người bán?",
-        "Cách mua hàng trên Shopee của quốc gia khác?",
+        "Cần chuẩn bị bằng chứng gì khi yêu cầu hoàn tiền?",
     ]
     for s in suggestions:
         if st.button(s, use_container_width=True, key=f"sug_{s[:20]}"):
@@ -68,6 +70,23 @@ if "messages" not in st.session_state:
     st.session_state.messages = []
 if "pending_query" not in st.session_state:
     st.session_state.pending_query = None
+
+
+def build_retrieval_query(current_query: str, messages: list[dict]) -> str:
+    """Chỉ nối lượt trước khi câu hiện tại thực sự có dấu hiệu follow-up."""
+    normalized = current_query.lower().strip()
+    follow_up_markers = (
+        "còn ", "vậy ", "thế ", "trường hợp đó", "điều này",
+        "chính sách đó", "phương thức đó", "nó ", "còn nếu",
+    )
+    is_follow_up = any(marker in normalized for marker in follow_up_markers)
+    if not is_follow_up:
+        return current_query
+    prior_questions = [
+        message["content"] for message in messages
+        if message.get("role") == "user" and message.get("content") != current_query
+    ]
+    return f"{prior_questions[-1]}\nCâu hỏi tiếp theo: {current_query}" if prior_questions else current_query
 
 # =============================================================================
 # MAIN CHAT AREA
@@ -118,7 +137,10 @@ if query:
                 # sources = response.get("sources", [])
 
                 from src.task10_generation import generate_with_citation
-                response = generate_with_citation(query, top_k=top_k)
+                # Lịch sử gần nhất được đưa vào query retrieval để follow-up như
+                # “còn COD thì sao?” giữ được chủ đề của lượt trước.
+                retrieval_query = build_retrieval_query(query, st.session_state.messages)
+                response = generate_with_citation(retrieval_query, top_k=top_k)
                 answer = response.get("answer", "Chưa thể trả lời.")
                 sources = response.get("sources", [])
 

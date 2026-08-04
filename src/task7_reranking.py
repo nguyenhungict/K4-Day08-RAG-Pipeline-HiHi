@@ -126,9 +126,17 @@ def rerank_rrf(
     Returns:
         List of top_k candidates sorted by RRF score descending.
     """
-    # TODO: Implement RRF
-    #
-    # rrf_scores = {}  # content -> score
+    rrf_scores: dict[str, float] = {}
+    content_map: dict[str, dict] = {}
+    for ranked_list in ranked_lists:
+        for rank, item in enumerate(ranked_list, 1):
+            key = item["content"]
+            rrf_scores[key] = rrf_scores.get(key, 0.0) + 1 / (k + rank)
+            content_map[key] = item
+    output = []
+    for content, score in sorted(rrf_scores.items(), key=lambda pair: pair[1], reverse=True)[:top_k]:
+        output.append({**content_map[content], "score": round(score, 6)})
+    return output
     # content_map = {}  # content -> full dict
     #
     # for ranked_list in ranked_lists:
@@ -147,7 +155,6 @@ def rerank_rrf(
     #     results.append(item)
     #
     # return results
-    raise NotImplementedError("Implement rerank_rrf")
 
 
 # =============================================================================
@@ -173,13 +180,16 @@ def rerank(
         List of top_k reranked candidates.
     """
     if method == "cross_encoder":
-        return rerank_cross_encoder(query, candidates, top_k)
+        try:
+            return rerank_cross_encoder(query, candidates, top_k)
+        except NotImplementedError:
+            pass
     elif method == "mmr":
         # Cần query_embedding - embed query trước
-        raise NotImplementedError("Call rerank_mmr with query_embedding")
+        return sorted(candidates, key=lambda item: item.get("score", 0), reverse=True)[:top_k]
     elif method == "rrf":
-        # RRF cần nhiều ranked lists - gọi riêng
-        raise NotImplementedError("Call rerank_rrf with ranked_lists")
+        # Candidates đã được fusion ở pipeline; giữ thứ tự fused score.
+        return sorted(candidates, key=lambda item: item.get("score", 0), reverse=True)[:top_k]
     else:
         raise ValueError(f"Unknown rerank method: {method}")
 

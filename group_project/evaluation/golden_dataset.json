@@ -13,5 +13,65 @@
     "question": "Người bán không được đăng bán những sản phẩm nào?",
     "expected_answer": "Hàng giả/nhái, sản phẩm bất hợp pháp, vi phạm sở hữu trí tuệ, và các mặt hàng nằm trong danh sách cấm của sàn.",
     "expected_context": "Trang Product Listing Regulations, mục Prohibited Content"
+  },
+  {
+    "question": "Thực phẩm tươi sống được yêu cầu hoàn tiền trong bao lâu?",
+    "expected_answer": "Trong 24 giờ sau khi giao hàng thành công.",
+    "expected_context": "Returns and Refund Policy"
+  },
+  {
+    "question": "Cần chuẩn bị gì khi gửi yêu cầu hoàn tiền?",
+    "expected_answer": "Chọn lý do phù hợp và cung cấp ảnh hoặc video khi được yêu cầu.",
+    "expected_context": "Returns and Refund Policy; Bằng chứng cho yêu cầu hoàn tiền"
+  },
+  {
+    "question": "Có thể trả tiền khi nhận hàng không?",
+    "expected_answer": "Có, COD là một phương thức thanh toán được hỗ trợ.",
+    "expected_context": "Payment Methods Overview"
+  },
+  {
+    "question": "Sau khi đặt hàng có đổi phương thức thanh toán được không?",
+    "expected_answer": "Thông thường không thể; có thể hủy đơn nếu trạng thái cho phép và đặt lại.",
+    "expected_context": "Đổi phương thức thanh toán"
+  },
+  {
+    "question": "Làm sao theo dõi đơn hàng?",
+    "expected_answer": "Vào mục Đơn mua và xem trạng thái, thông tin vận chuyển trong chi tiết đơn.",
+    "expected_context": "Theo dõi đơn hàng"
+  },
+  {
+    "question": "Đơn xuyên biên giới có thể giao chậm hơn không?",
+    "expected_answer": "Có, đơn xuyên biên giới có thể có thời gian giao hàng dài hơn.",
+    "expected_context": "Mua hàng xuyên biên giới"
+  },
+  {
+    "question": "Người bán phải cung cấp thông tin gì khi đăng sản phẩm?",
+    "expected_answer": "Mô tả, hình ảnh và thông tin sản phẩm chính xác.",
+    "expected_context": "Seller Listing Regulations"
+  },
+  {
+    "question": "Vi phạm quy định đăng bán có hậu quả gì?",
+    "expected_answer": "Sản phẩm có thể bị gỡ hoặc tài khoản bị xử lý.",
+    "expected_context": "Seller Listing Regulations"
+  },
+  {
+    "question": "Có nên chia sẻ mã xác thực tài khoản không?",
+    "expected_answer": "Không; không được chia sẻ mật khẩu hoặc mã xác thực.",
+    "expected_context": "Bảo vệ thông tin tài khoản"
+  },
+  {
+    "question": "Nên thanh toán ở đâu để an toàn?",
+    "expected_answer": "Chỉ thao tác thanh toán trong ứng dụng hoặc website chính thức.",
+    "expected_context": "Bảo vệ thông tin tài khoản"
+  },
+  {
+    "question": "Hoàn tiền được xử lý bằng cách nào?",
+    "expected_answer": "Theo phương thức thanh toán ban đầu sau khi yêu cầu được chấp thuận.",
+    "expected_context": "Returns and Refund Policy"
+  },
+  {
+    "question": "Apple Pay có được hỗ trợ không?",
+    "expected_answer": "Có, Apple Pay nằm trong các phương thức được liệt kê.",
+    "expected_context": "Payment Methods Overview"
   }
 ]

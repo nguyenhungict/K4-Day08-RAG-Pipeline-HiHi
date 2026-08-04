@@ -7,7 +7,7 @@ numpy>=1.24.0
 crawl4ai>=0.3.0
 
 # Task 3 - Document conversion
-markitdown[pdf]>=0.1.0
+markitdown[pdf,docx]>=0.1.0
 fpdf2>=2.7.0
 
 # Task 4 - Chunking & Indexing
@@ -32,11 +32,14 @@ openai>=1.30.0
 
 # Group project - UI
 streamlit>=1.35.0
+pyarrow>=21.0.0,<25.0.0  # Compatible with both Streamlit 1.60 and datasets 5.x
 
 # Group project - Evaluation
 ragas==0.1.21
 datasets>=2.14.0
-langchain-openai>=0.1.0
+# RAGAS 0.1.21 dùng LangChain 0.2.x; pin dưới 0.2 để tránh resolver kéo
+# langchain-openai 1.x không tương thích.
+langchain-openai>=0.1.0,<0.2.0
 
 # Testing (dung de cham diem bai ca nhan)
 pytest>=7.0.0
