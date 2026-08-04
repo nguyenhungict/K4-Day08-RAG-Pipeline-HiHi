@@ -21,9 +21,9 @@ CHUNK_SIZE = 800
 CHUNK_OVERLAP = 100
 CHUNKING_METHOD = "recursive"
 
-# Cấu hình Embedding
-EMBEDDING_MODEL = "BAAI/bge-m3"
-EMBEDDING_DIM = 1024
+# Cấu hình Embedding (Dùng all-MiniLM-L6-v2 nhẹ 90MB để tiết kiệm dung lượng đĩa)
+EMBEDDING_MODEL = "all-MiniLM-L6-v2"
+EMBEDDING_DIM = 384
 
 # Cấu hình Vector Store
 VECTOR_STORE = "chromadb"
