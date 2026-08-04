@@ -21,7 +21,37 @@ from pathlib import Path
 from typing import List
 import re
 
+import numpy as np
+from rank_bm25 import BM25Okapi
+
 STANDARDIZED_DIR = Path(__file__).parent.parent / "data" / "standardized"
+
+
+def _load_corpus() -> list[dict]:
+    """Load toàn bộ file .md từ data/standardized/ làm corpus."""
+    corpus = []
+    for md_file in STANDARDIZED_DIR.rglob("*.md"):
+        try:
+            content = md_file.read_text(encoding="utf-8")
+            if content.strip():  # Bỏ qua file rỗng
+                corpus.append(
+                    {
+                        "content": content,
+                        "metadata": {
+                            "source": md_file.name,
+                            "doc_type": md_file.parent.name,  # "legal" hoặc "news"
+                            "chunk_index": 0,
+                            "customer_role": "both",
+                        },
+                    }
+                )
+        except Exception as e:
+            print(f" Không đọc được {md_file.name}: {e}")
+    return corpus
+
+
+# Load corpus và build index khi module được import
+CORPUS: list[dict] = _load_corpus()
 
 
 def _tokenize(text: str) -> List[str]:
@@ -127,9 +157,15 @@ def build_bm25_index(corpus: List[dict]):
     Args:
         corpus: List of {'content': str, 'metadata': dict}
     """
-    if corpus is None or len(corpus) == 0:
+    if not corpus:
         return None
-    return BM25Index(corpus)
+    # Tokenize — split theo khoảng trắng
+    tokenized_corpus = [doc["content"].lower().split() for doc in corpus]
+    return BM25Okapi(tokenized_corpus)
+
+
+# Singleton index
+_BM25_INDEX = build_bm25_index(CORPUS) if CORPUS else None
 
 
 def lexical_search(query: str, top_k: int = 10) -> list[dict]:
@@ -148,36 +184,41 @@ def lexical_search(query: str, top_k: int = 10) -> list[dict]:
         }
         Sorted by score descending.
     """
-    global _BM25_INDEX
-    if _BM25_INDEX is None:
-        _BM25_INDEX = build_bm25_index(CORPUS)
-
-    if _BM25_INDEX is None:
+    if not CORPUS or _BM25_INDEX is None:
         return []
 
-    query_terms = _tokenize(query)
-    if not query_terms:
-        return []
+    tokenized_query = query.lower().split()
+    scores = _BM25_INDEX.get_scores(tokenized_query)
 
-    scores = _BM25_INDEX.get_scores(query_terms)
-    ranked = sorted(
-        enumerate(scores), key=lambda item: item[1], reverse=True
-    )[:top_k]
+    # Lấy top_k index có điểm cao nhất
+    top_indices = np.argsort(scores)[::-1][:top_k]
 
     results = []
-    for idx, score in ranked:
-        if score <= 0:
-            continue
-        results.append({
-            "content": CORPUS[idx]["content"],
-            "score": float(score),
-            "metadata": CORPUS[idx]["metadata"],
-        })
+    for idx in top_indices:
+        if scores[idx] > 0:
+            results.append(
+                {
+                    "content": CORPUS[idx]["content"],
+                    "score": float(scores[idx]),
+                    "metadata": CORPUS[idx]["metadata"],
+                }
+            )
 
+    # Đảm bảo sort descending
+    results.sort(key=lambda x: x["score"], reverse=True)
     return results
 
 
 if __name__ == "__main__":
+    print(f"Corpus size: {len(CORPUS)} documents")
+    # Test
     results = lexical_search("phương thức thanh toán shopee", top_k=5)
-    for r in results:
-        print(f"[{r['score']:.3f}] {r['content'][:100]}...")
+    if results:
+        for r in results:
+            print(
+                f"[{r['score']:.3f}] ({r['metadata']['source']}) {r['content'][:100]}..."
+            )
+    else:
+        print(
+            " Không có kết quả — corpus rỗng hoặc chưa convert markdown (chạy task3 trước)."
+        )
