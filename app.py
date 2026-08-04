@@ -54,6 +54,11 @@ with st.sidebar:
         if st.button(s, use_container_width=True, key=f"sug_{s[:20]}"):
             st.session_state["pending_query"] = s
 
+    if st.button("🗑️ Xóa hội thoại", use_container_width=True):
+        st.session_state["messages"] = []
+        st.session_state["pending_query"] = None
+        st.rerun()
+
     st.divider()
     st.subheader("⚙️ Thiết lập")
     top_k = st.slider("Số chunks retrieval (top_k)", 3, 10, 5)
