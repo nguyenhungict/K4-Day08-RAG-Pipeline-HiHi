@@ -1,25 +1,15 @@
 """
 Task 3 — Convert toàn bộ file trong data/landing/ thành Markdown.
-
-Sử dụng MarkItDown của Microsoft:
-    https://github.com/microsoft/markitdown
-
-Cài đặt:
-    pip install "markitdown[pdf]"
-    # Lưu ý: cần extra [pdf] để convert được file PDF. Chỉ "pip install markitdown"
-    # (không có extra) sẽ báo MissingDependencyException khi convert PDF, dù JSON/DOCX
-    # vẫn convert bình thường.
-
-Hướng dẫn:
-    1. Scan toàn bộ file trong data/landing/ (PDF, DOCX, JSON)
-    2. Convert sang Markdown
-    3. Lưu vào data/standardized/ giữ nguyên cấu trúc thư mục
 """
 
 import json
+import sys
 from pathlib import Path
-
 from markitdown import MarkItDown
+
+# Set stdout encoding for Windows
+if sys.platform == "win32":
+    sys.stdout.reconfigure(encoding="utf-8")
 
 LANDING_DIR = Path(__file__).parent.parent / "data" / "landing"
 OUTPUT_DIR = Path(__file__).parent.parent / "data" / "standardized"
@@ -35,7 +25,7 @@ def convert_legal_docs():
 
     for filepath in legal_dir.iterdir():
         if filepath.suffix.lower() in (".pdf", ".docx", ".doc"):
-            print(f"Converting: {filepath.name}")
+            print(f"Converting legal doc: {filepath.name}")
             result = md.convert(str(filepath))
             output_path = output_dir / f"{filepath.stem}.md"
             output_path.write_text(result.text_content, encoding="utf-8")
@@ -50,7 +40,7 @@ def convert_news_articles():
 
     for filepath in news_dir.iterdir():
         if filepath.suffix.lower() == ".json":
-            print(f"Converting: {filepath.name}")
+            print(f"Converting news article: {filepath.name}")
             data = json.loads(filepath.read_text(encoding="utf-8"))
             output_path = output_dir / f"{filepath.stem}.md"
 
