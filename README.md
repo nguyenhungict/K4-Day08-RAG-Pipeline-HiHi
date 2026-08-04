@@ -87,7 +87,7 @@ Tìm và tải về **tối thiểu 3 văn bản chính sách/quy định** dạ
 
 ### Task 2 — Crawl Bài Viết/Thông Báo
 
-Crawl **tối thiểu 5 bài viết** hướng dẫn hỗ trợ khách hàng (theo dõi đơn hàng, đổi phương thức thanh toán, bằng chứng hoàn tiền, mua hàng xuyên biên giới).
+Crawl **tối thiểu 5 bài viết** hướng dẫn hỗ trợ khách hàng (theo dõi đơn hàng, đổi phương thức thanh toán, bằng chứng hoàn tiền, hủy đơn hàng).
 
 **Thư viện khuyến nghị:** [Crawl4AI](https://github.com/unclecode/crawl4ai)
 
